@@ -71,7 +71,7 @@ import ChatSection from '@/components/organisms/ChatSection'
 import SearchSidebar from '@/components/molecules/SearchSidebar'
 // import Stories from '@/components/molecules/Stories'
 import NavbarLeft from '@/components/molecules/NavbarLeft'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import ChatEmpty from '@/components/molecules/ChatEmpty'
 export default {
   components: {
@@ -97,9 +97,10 @@ export default {
   methods: {
     ...mapActions('auth', ['interceptorsRequest', 'interceptorsResponse']),
     ...mapActions('user', ['detailUser', 'updateLocation', 'allUser']),
-    ...mapActions('room', ['myRoom']),
+    ...mapActions('room', ['myRoom', 'detailRoom']),
     ...mapActions('friend', ['myFriend']),
     ...mapActions(['changeFirstLoading']),
+    ...mapActions('message', ['detailMessage']),
     showNewTab() {
       this.newTab = !this.newTab
     },
@@ -136,17 +137,66 @@ export default {
             }
           })
       }
-      await this.myRoom()
+      const responseMyRoom = await this.myRoom()
+      const roomsId = responseMyRoom.data.map((item) => item.idRoom)
+      this.socket.emit('join-room', roomsId)
       await this.allUser()
       await this.myFriend()
     } catch (err) {
       console.log('err')
     }
     this.changeFirstLoading(false)
+    this.socket.on('notifAddFriend', (data) => {
+      if (this.getDetailUser.id === data.receiver) {
+        this.$toast.info(`${data.nameSender} want to be your friend`)
+        this.myFriend()
+        this.allUser()
+      }
+    })
+    this.socket.on('notifAccFriend', (data) => {
+      if (this.getDetailUser.id === data.receiver) {
+        this.$toast.info(`${data.nameSender} accepts your friendship`)
+        this.myFriend()
+        this.myRoom()
+      }
+    })
+    this.socket.on('notifRejectFriend', (data) => {
+      if (this.getDetailUser.id === data.receiver) {
+        this.$toast.error(`Friend request rejected by ${data.nameSender} `)
+        this.myFriend()
+      }
+    })
+    this.socket.on('notifDeleteFriend', (data) => {
+      if (this.getDetailUser.id === data.receiver) {
+        console.log('Yahah')
+        this.myFriend()
+        this.allUser()
+      }
+    })
+    this.socket.on('sendMessageHandle', (data) => {
+      // console.log(data.room)
+      // console.log(this.getDetailRoom.idRoom)
+      if (this.getDetailRoom.idRoom === data.room) {
+        this.detailMessage({ id: data.room, page: 1 })
+      }
+      this.myRoom()
+    })
+    this.socket.on('notifDeleteMessage', (data) => {
+      this.myRoom()
+    })
+    this.socket.on('notifPesan', ({ notif, data }) => {
+      this.getMyRoom.map((item) => {
+        if (item.idRoom === data.room && item.notification === 1) {
+          this.$toast.info(notif)
+        }
+      })
+      // logOrNo && this.$toast.info(notif)
+    })
   },
   computed: {
     ...mapGetters('user', ['getDetailUser']),
-    ...mapGetters('room', ['getDetailRoom']),
+    ...mapState(['socket']),
+    ...mapGetters('room', ['getDetailRoom', 'getMyRoom']),
     ...mapGetters(['getFirstLoading']),
     getCurrentRoute() {
       return this.$route.name

@@ -39,12 +39,36 @@ const actions = {
         reject(err.response)
       })
     })
+  },
+  sendMessage({ commit, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      Message.sendMessage(data).then(response => {
+        resolve(response.data)
+      }).catch(err => {
+        reject(err.response)
+      })
+    })
+  },
+  deleteMessage({ commit, dispatch }, id) {
+    return new Promise((resolve, reject) => {
+      Message.deleteMessage(id).then(response => {
+        resolve(response.data)
+      }).catch(err => {
+        reject(err.response)
+      })
+    })
+  },
+  clearDetailMessage({ commit }) {
+    commit('CLEAR_DETAIL_MESSAGE')
   }
 }
 
 const mutations = {
   DETAIL_MESSAGE: (state, payload) => {
     state.detailMessage = payload.reverse()
+  },
+  CLEAR_DETAIL_MESSAGE: (state, payload) => {
+    state.detailMessage = []
   }
 }
 

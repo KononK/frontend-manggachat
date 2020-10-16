@@ -7,23 +7,34 @@
           :text="`${room.name[0]}${room.name[room.name.length - 1]}`"
           class="no-image"
         ></b-avatar>
+        <b-avatar
+          :src="getPrivate.image"
+          v-if="room.type === 1"
+          class="no-image"
+        ></b-avatar>
       </div>
       <div
         @click="$emit('detail-message', room.idRoom)"
         class="name-description cursor-pointer"
       >
-        <h5 class="mb-0 font-17">{{ room.name }}</h5>
+        <h5 class="mb-0 font-17" v-if="room.type === 2">{{ room.name }}</h5>
+        <h5 class="mb-0 font-17" v-if="room.type === 1">
+          {{ getPrivate.friendName }}
+        </h5>
         <p class="mb-0 font-13 text-muted">
-          {{ room.idUser === getDetailUser.id ? 'Me' : room.userName }}:
-          {{ room.message }}
+          {{ room.sender === getDetailUser.id ? 'Me' : room.userName }}:
+          {{ filterMessage }}
         </p>
       </div>
       <div class="clock-check text-right ml-auto">
         <p class="mb-0 font-14 clock">
           {{ filterTime(room.createdAt) }}
         </p>
-        <span v-if="getCurrentRoute === 'Dashboard'" class="cursor-pointer"
-          ><b-icon :icon="status ? 'volume-mute' : 'volume-up'"
+        <span
+          v-if="getCurrentRoute === 'Dashboard'"
+          class="cursor-pointer text-muted"
+          @click="$emit('toggle-notification', room.idRoom)"
+          ><b-icon :icon="room.notification ? 'bell-fill' : 'bell'"
         /></span>
       </div>
     </div>
@@ -37,9 +48,7 @@ export default {
     room: Object
   },
   data() {
-    return {
-      status: true
-    }
+    return {}
   },
   methods: {
     filterTime(val) {
@@ -54,8 +63,34 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['getDetailUser']),
+    ...mapGetters('room', ['getMyRoom']),
+    ...mapGetters('friend', ['getMyFriend']),
     getCurrentRoute() {
       return this.$route.name
+    },
+    filterMessage() {
+      if (this.room.deletedAt) {
+        return '(Deleted)'
+      } else {
+        return this.room.message.length > 40
+          ? this.room.message.substr(0, 40) + '...'
+          : this.room.message
+      }
+    },
+    getPrivate() {
+      if (this.room.type === 1) {
+        if (this.room.idSender === this.getDetailUser.id) {
+          return this.getMyFriend.filter(
+            (item) => item.idFriend === this.room.idReceiver
+          )[0]
+        } else {
+          return this.getMyFriend.filter(
+            (item) => item.idFriend === this.room.idSender
+          )[0]
+        }
+      } else {
+        return 'NAH'
+      }
     }
   }
 }

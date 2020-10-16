@@ -1,7 +1,7 @@
 <template>
   <b-modal id="modal-room" hide-footer title="Create new group">
     <div class="form-group-auth">
-      <label>Room Name</label>
+      <label>Group Name</label>
       <input
         type="text"
         @keyup.enter="handleCreate"
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -38,8 +38,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions('room', ['addPublicRooms']),
     handleCreate() {
-      console.log('ok')
+      if (!this.name) {
+        this.$toast.error('Name required')
+      } else {
+        this.addPublicRooms(this.name)
+          .then((response) => {
+            console.log(response)
+            this.$toast.success('Group created successfully')
+            this.name = ''
+            this.$bvModal.hide('modal-room')
+          })
+          .catch((err) => {
+            this.$toast.error(err.data.message)
+          })
+      }
     }
   },
   computed: {

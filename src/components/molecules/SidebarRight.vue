@@ -1,7 +1,9 @@
 <template>
   <b-sidebar id="sidebar-right" right shadow>
     <h5 class="mb-0 color-lb font-18 text-center mb-3">
-      {{ getDetailRoom.name }}
+      {{
+        getDetailRoom.type === 2 ? getDetailRoom.name : getPrivate.friendName
+      }}
     </h5>
     <div class="px-3 py-2">
       <div class="contact-image text-center">
@@ -15,18 +17,30 @@
       </div>
       <div class="border-bottom pb-3 mt-4">
         <div>
-          <p class="font-17 weight-500 mb-1">{{ getDetailRoom.name }}</p>
+          <p class="font-17 weight-500 mb-1">
+            {{
+              getDetailRoom.type === 2
+                ? getDetailRoom.name
+                : getPrivate.friendName
+            }}
+          </p>
           <p class="phone-number weight-400 mb-1 font-14">
             <span v-if="getDetailRoom.type === 2">Group</span>
-            <span v-if="getDetailRoom.type === 1">Online</span>
+            <span v-if="getDetailRoom.type === 1">
+              {{ getPrivate.statusOnine === 1 ? 'Online' : 'Offline' }}
+            </span>
           </p>
         </div>
         <div class="mt-4" v-if="getDetailRoom.type === 1">
           <p class="font-17 weight-500 mb-1">Phone Number</p>
-          <p class="phone-number weight-400 mb-1 font-14">Phone</p>
+          <p class="phone-number weight-400 mb-1 font-14">
+            {{
+              getPrivate.phoneNumber ? getPrivate.phoneNumber : 'Belum diset'
+            }}
+          </p>
         </div>
       </div>
-      <TabSidebarRight />
+      <TabSidebarRight @detail-imaged="handleImaged" />
     </div>
     <!-- <ModalInvite /> -->
   </b-sidebar>
@@ -50,8 +64,30 @@ export default {
     // ModalInvite,
     TabSidebarRight
   },
+  methods: {
+    handleImaged(val) {
+      this.$emit('detail-image', val)
+    }
+  },
   computed: {
-    ...mapGetters('room', ['getDetailRoom'])
+    ...mapGetters('room', ['getDetailRoom']),
+    ...mapGetters('user', ['getDetailUser']),
+    ...mapGetters('friend', ['getMyFriend']),
+    getPrivate() {
+      if (this.getDetailRoom.type === 1) {
+        if (this.getDetailRoom.idSender === this.getDetailUser.id) {
+          return this.getMyFriend.filter(
+            (item) => item.idFriend === this.getDetailRoom.idReceiver
+          )[0]
+        } else {
+          return this.getMyFriend.filter(
+            (item) => item.idFriend === this.getDetailRoom.idSender
+          )[0]
+        }
+      } else {
+        return 'NAH'
+      }
+    }
   }
 }
 </script>

@@ -20,7 +20,7 @@
 
 <script>
 import UserItem from '@/components/molecules/UserItem'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   components: {
     UserItem
@@ -31,6 +31,11 @@ export default {
       user.isLoading = true
       this.addFriend(user.id)
         .then((response) => {
+          this.socket.emit('addFriend', {
+            sender: this.getDetailUser.id,
+            nameSender: this.getDetailUser.name,
+            receiver: user.id
+          })
           this.$toast.success('Friend request sent successfully')
           user.isLoading = false
         })
@@ -41,7 +46,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['getAllUser'])
+    ...mapGetters('user', ['getAllUser', 'getDetailUser']),
+    ...mapState(['socket'])
   }
 }
 </script>

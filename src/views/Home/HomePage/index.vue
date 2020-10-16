@@ -3,7 +3,11 @@
     <div class="chat-list">
       <div v-if="getMyRoom.length > 0">
         <div v-for="room in getMyRoom" :key="room.id">
-          <ContactItem @detail-message="handleDetailMessage" :room="room" />
+          <ContactItem
+            @toggle-notification="handleToggleNotif"
+            @detail-message="handleDetailMessage"
+            :room="room"
+          />
         </div>
       </div>
       <div v-else>
@@ -15,6 +19,7 @@
 
 <script>
 import ContactItem from '@/components/molecules/ContactItem'
+
 import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
@@ -22,9 +27,13 @@ export default {
   },
   methods: {
     ...mapActions('message', ['detailMessage']),
+    ...mapActions('room', ['changeNotif']),
     handleDetailMessage(id) {
       this.detailMessage({ id, page: 1 })
       this.$emit('change-type')
+    },
+    handleToggleNotif(id) {
+      this.changeNotif(id)
     }
   },
   computed: {

@@ -12,18 +12,32 @@
           }`"
           class="no-image mr-2"
         ></b-avatar>
+        <b-avatar
+          v-if="getDetailRoom.type === 1"
+          :src="getPrivate.image"
+          class="no-image mr-2"
+        ></b-avatar>
         <div class="d-flex flex-column justify-content-around">
-          <p class="mb-0 weight-500" v-b-toggle.sidebar-right>
+          <p class="mb-0 weight-500" v-if="getDetailRoom.type === 2">
             {{ getDetailRoom.name }}
+          </p>
+          <p class="mb-0 weight-500" v-if="getDetailRoom.type === 1">
+            {{ getPrivate.friendName }}
           </p>
           <!-- <p class="mb-0 font-11 text-muted" v-if="getPrivateMessage.type === 2">Guna, Ridwan, Angga, Ica,....</p> -->
           <p class="mb-0 font-12" v-if="message">Sedang Mengetik...</p>
           <span class="color-lb font-12" v-if="!message">
-            {{ getDetailRoom.type === 2 ? 'Group' : 'Private' }}
+            {{
+              getDetailRoom.type === 2
+                ? 'Group'
+                : getPrivate.statusOnline === 1
+                ? 'Online'
+                : 'Offline'
+            }}
           </span>
         </div>
       </div>
-      <button class="btn">
+      <button class="btn" v-b-toggle.sidebar-right>
         <g-image url="icon/profile_menu.svg" class="img-fluid" />
       </button>
     </div>
@@ -40,7 +54,24 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('room', ['getDetailRoom'])
+    ...mapGetters('room', ['getDetailRoom']),
+    ...mapGetters('user', ['getDetailUser']),
+    ...mapGetters('friend', ['getMyFriend']),
+    getPrivate() {
+      if (this.getDetailRoom.type === 1) {
+        if (this.getDetailRoom.idSender === this.getDetailUser.id) {
+          return this.getMyFriend.filter(
+            (item) => item.idFriend === this.getDetailRoom.idReceiver
+          )[0]
+        } else {
+          return this.getMyFriend.filter(
+            (item) => item.idFriend === this.getDetailRoom.idSender
+          )[0]
+        }
+      } else {
+        return 'NAH'
+      }
+    }
   }
 }
 </script>

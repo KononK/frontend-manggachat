@@ -2,6 +2,7 @@
   <div
     class="neww"
     :class="[message.idUser === getDetailUser.id ? 'sender' : 'receiver']"
+    v-if="message.type !== 6"
   >
     <div class="set">
       <div class="contact-image">
@@ -18,30 +19,38 @@
           >{{ message.name }}</span
         >
         <div class="clearfix"></div>
-        <p class="mb-0">{{ message.message }}</p>
-        <div v-if="message.location" class="mt-1">
+        <p class="mb-0 text-danger font-weight-bold" v-if="message.deletedAt">
+          (Deleted)
+        </p>
+        <p class="mb-0" v-if="!message.deletedAt">{{ message.message }}</p>
+        <div v-if="message.location && !message.deletedAt" class="mt-1">
           <GmapMap
-            :center="{ lat: message.location.lat, lng: message.location.lng }"
+            :center="JSON.parse(message.location)"
             :zoom="15"
             map-type-id="terrain"
             style="width: 100%; height: 200px"
           ></GmapMap>
         </div>
-        <div v-if="message.image" class="mt-1">
+        <div v-if="message.image && !message.deletedAt" class="mt-1">
           <button
             v-b-modal.modal-chat
             class="btn p-0"
             @click="$emit('detail-image', message.image)"
           >
-            <img :src="message.image" class="img-fluid rounded" />
+            <b-img-lazy
+              v-bind="mainProps"
+              :src="message.image"
+              alt="image user"
+            ></b-img-lazy>
+            <!-- <img :src="message.image" class="img-fluid rounded" /> -->
           </button>
         </div>
-        <div v-if="message.documentName" class="mt-1">
+        <div v-if="message.documentName && !message.deletedAt" class="mt-1">
           <a
             class="d-block btn btn-sm btn-primary font-13 my-2"
             target="_blank"
             :href="message.documentUrl"
-            >Download {{ message.documentName }}</a
+            >{{ message.documentName }}</a
           >
         </div>
         <timeago
@@ -61,6 +70,19 @@
 import { mapGetters } from 'vuex'
 export default {
   props: ['message'],
+  data() {
+    return {
+      mainProps: {
+        center: true,
+        fluidGrow: true,
+        blank: true,
+        blankColor: '#bbb',
+        width: 600,
+        height: 400,
+        class: 'img-fluid rounded'
+      }
+    }
+  },
   methods: {
     filterTime(val) {
       const date = new Date(val)
@@ -80,6 +102,10 @@ export default {
 </script>
 
 <style scoped>
+.delete-message {
+  position: absolute;
+  right: -50px;
+}
 .set {
   display: flex;
   align-items: flex-end;

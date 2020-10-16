@@ -8,6 +8,12 @@ export default {
   },
   getDetailRoom: (id) => {
     return Api.get(`${ENDPOINT}/${id}`)
+  },
+  addPublicRoom: (data) => {
+    return Api.post(`${ENDPOINT}/public-room`, { name: data })
+  },
+  changeNotif: (id) => {
+    return Api.patch(`${ENDPOINT}/change-notif/${id}`)
   }
 
 }

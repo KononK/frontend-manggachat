@@ -3,7 +3,7 @@
     <div class="chat-list">
       <div v-if="getPrivateRoom.length > 0">
         <div v-for="room in getPrivateRoom" :key="room.id">
-          <ContactItem :room="room" />
+          <ContactItem @detail-message="handleDetailMessage" :room="room" />
         </div>
       </div>
       <div v-else>
@@ -26,11 +26,18 @@ export default {
     ContactItem
   },
   methods: {
-    ...mapActions('room', ['privateRoom'])
+    ...mapActions('room', ['privateRoom']),
+    ...mapActions('message', ['detailMessage']),
+
+    handleDetailMessage(id) {
+      this.detailMessage({ id, page: 1 })
+      this.$emit('change-type')
+    }
   },
   mounted() {
     this.privateRoom()
   },
+
   computed: {
     ...mapGetters('room', ['getPrivateRoom'])
   }

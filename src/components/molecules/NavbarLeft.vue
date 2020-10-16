@@ -136,12 +136,6 @@ export default {
   font-size: 20px;
 }
 
-@media screen and (max-width: 767px) {
-  .content-message {
-    display: none;
-  }
-}
-
 .dropdown-menu.show {
   z-index: 2000;
 }

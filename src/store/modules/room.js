@@ -34,6 +34,25 @@ const actions = {
       })
     })
   },
+  addPublicRooms({ commit, dispatch }, data) {
+    dispatch('changeIsLoading', true, {
+      root: true
+    })
+    return new Promise((resolve, reject) => {
+      Room.addPublicRoom(data).then(response => {
+        resolve(response.data)
+        dispatch('myRoom')
+        dispatch('changeIsLoading', false, {
+          root: true
+        })
+      }).catch(err => {
+        dispatch('changeIsLoading', false, {
+          root: true
+        })
+        reject(err.response)
+      })
+    })
+  },
   detailRoom({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {
       Room.getDetailRoom(id).then(response => {
@@ -44,7 +63,22 @@ const actions = {
       })
     })
   },
-
+  changeNotif({ commit, dispatch }, id) {
+    return new Promise((resolve, reject) => {
+      Room.changeNotif(id).then(response => {
+        resolve(response.data)
+        dispatch('myRoom')
+      }).catch(err => {
+        reject(err.response)
+      })
+    })
+  },
+  clearDetailRoom({ commit, dispatch }) {
+    dispatch('message/clearDetailMessage', null, {
+      root: true
+    })
+    commit('CLEAR_DETAIL_ROOM')
+  },
   privateRoom({ commit }) {
     commit('PRIVATE_ROOM')
   },
@@ -59,6 +93,9 @@ const mutations = {
   },
   DETAIL_ROOM: (state, payload) => {
     state.detailRoom = payload
+  },
+  CLEAR_DETAIL_ROOM: (state, payload) => {
+    state.detailRoom = {}
   },
   PRIVATE_ROOM: (state) => {
     const privateRoom = state.myRoom.filter(item => item.type === 1)

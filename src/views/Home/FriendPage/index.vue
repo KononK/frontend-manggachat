@@ -103,7 +103,7 @@
 
 <script>
 import FriendItem from '@/components/molecules/FriendItem'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   components: {
     FriendItem
@@ -119,6 +119,11 @@ export default {
       this.confirmSwal('Friends', 'Accept friend requests', 'question', () => {
         this.accFriend(id)
           .then((response) => {
+            this.socket.emit('accFriend', {
+              sender: this.getDetailUser.id,
+              nameSender: this.getDetailUser.name,
+              receiver: id
+            })
             this.$toast.success('Successfully added to friends list')
           })
           .catch((err) => {
@@ -130,6 +135,11 @@ export default {
       this.confirmSwal('Friends', 'Decline friend requests', 'question', () => {
         this.refuseFriend(id)
           .then((response) => {
+            this.socket.emit('rejectFriend', {
+              sender: this.getDetailUser.id,
+              nameSender: this.getDetailUser.name,
+              receiver: id
+            })
             this.$toast.info('Successfully rejected')
           })
           .catch((err) => {
@@ -140,6 +150,11 @@ export default {
     handleDeleteDeclineFriend(id) {
       this.deleteFriendRequest(id)
         .then((response) => {
+          this.socket.emit('deleteFriend', {
+            sender: this.getDetailUser.id,
+            nameSender: this.getDetailUser.name,
+            receiver: id
+          })
           this.$toast.success('Successfully deleted')
         })
         .catch((err) => {
@@ -148,7 +163,9 @@ export default {
     }
   },
   computed: {
+    ...mapState(['socket']),
     ...mapGetters(['getLoading']),
+    ...mapGetters('user', ['getDetailUser']),
     ...mapGetters('friend', [
       'getMyFriend',
       'getFriendRequest',
