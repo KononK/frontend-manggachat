@@ -3,24 +3,18 @@ const END_POINT = 'users'
 
 export default {
   detail: () => {
-    return Api.get(`${END_POINT}/myprofile`)
+    return Api.get(`${END_POINT}/profile`)
   },
   updateProfile: (id, data) => {
     return Api.patch(`${END_POINT}/${id}`, data)
   },
-  listFriend: status => {
-    return Api.get(`${END_POINT}/friend-list?status=${status}`)
-  },
-  userList: () => {
-    return Api.get(`${END_POINT}/user-list`)
-  },
   getAll: () => {
     return Api.get(`${END_POINT}`)
   },
-  updateLocation: (data) => {
-    return Api.patch(`${END_POINT}/update-location`, data)
+  updateLocation: (id, location) => {
+    return Api.patch(`${END_POINT}/location/${id}`, { location })
   },
-  updateStatusOnline: (data) => {
-    return Api.patch(`${END_POINT}/status-online`, data)
+  updateStatusOnline: (id, status) => {
+    return Api.patch(`${END_POINT}/isonline/${id}`, { status })
   }
 }

@@ -72,10 +72,12 @@ export default {
   },
   methods: {
     handleLogout() {
-      this.logoutMixin(this.getDetailUser._id)
+      this.logoutMixin(this.getDetailUser.id)
     }
   },
-  computed: mapGetters('user', ['getDetailUser'])
+  computed: {
+    ...mapGetters('user', ['getDetailUser'])
+  }
 }
 </script>
 

@@ -1,26 +1,21 @@
 <template>
   <div
     class="neww"
-    :class="[message.idUser._id === iduser ? 'sender' : 'receiver']"
+    :class="[message.idUser === getDetailUser.id ? 'sender' : 'receiver']"
   >
     <div class="set">
       <div class="contact-image">
         <b-avatar
-          v-if="message.idUser.image"
-          :src="message.idUser.image"
-          class="no-image-avatar"
-        ></b-avatar>
-        <b-avatar
           variant="info"
-          v-if="!message.idUser.image"
+          :src="message.imageUser ? message.imageUser : ''"
           class="no-image-avatar"
         ></b-avatar>
       </div>
       <div class="message-text">
         <span
-          v-if="message.idUser._id !== iduser && type === 2"
+          v-if="message.idUser !== getDetailUser.id && getDetailRoom.type === 2"
           class="text-light mb-1 d-inline-block font-13"
-          >{{ message.idUser.name }}</span
+          >{{ message.name }}</span
         >
         <div class="clearfix"></div>
         <p class="mb-0">{{ message.message }}</p>
@@ -41,21 +36,21 @@
             <img :src="message.image" class="img-fluid rounded" />
           </button>
         </div>
-        <div v-if="message.document" class="mt-1">
+        <div v-if="message.documentName" class="mt-1">
           <a
             class="d-block btn btn-sm btn-primary font-13 my-2"
             target="_blank"
-            :href="message.document"
+            :href="message.documentUrl"
             >Download {{ message.documentName }}</a
           >
         </div>
         <timeago
-          :datetime="message.time"
+          :datetime="message.createdAt"
           class="font-12"
           :auto-update="60"
         ></timeago>
         <small class="clock d-inline-block mt-1">{{
-          filterTime(message.time)
+          filterTime(message.createdAt)
         }}</small>
       </div>
     </div>
@@ -63,8 +58,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  props: ['message', 'iduser', 'type'],
+  props: ['message'],
   methods: {
     filterTime(val) {
       const date = new Date(val)
@@ -75,6 +71,10 @@ export default {
       }`
       return result
     }
+  },
+  computed: {
+    ...mapGetters('user', ['getDetailUser']),
+    ...mapGetters('room', ['getDetailRoom'])
   }
 }
 </script>

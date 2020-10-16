@@ -6,8 +6,6 @@
     <div class="card border-0 rounded-0 chat-input-card">
       <div class="card-body position-relative">
         <input
-          @keyup.enter="send"
-          @keyup="typing"
           v-model="message"
           type="text"
           placeholder="Type your message..."
@@ -60,7 +58,6 @@
               <g-image class="ml-5" url="icon/contacts.png" width="18" />
             </button>
             <button
-              @click="handleShareLoc"
               class="dropdown-item mb-2 d-flex justify-content-between"
               type="button"
             >
@@ -84,7 +81,7 @@
             label="Loading..."
           ></b-spinner>
         </div>
-        <div v-else @click="send">
+        <div v-else>
           <g-image
             url="icon/send.svg"
             class="icon-send position-absolute cursor-pointer"
@@ -97,7 +94,6 @@
 
 <script>
 import VEmojiPicker from 'v-emoji-picker'
-import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -112,259 +108,11 @@ export default {
     VEmojiPicker
   },
   methods: {
-    ...mapActions('room', ['allMyRoom', 'detailRoom', 'saveMessageToDB']),
     handleShowEmoji() {
       this.showEmoji = !this.showEmoji
     },
     selectEmoji(emoji) {
       this.message += emoji.data
-    },
-    send() {
-      if (this.fileImage) {
-        this.handleSendMessageImg()
-      } else if (this.fileDoc) {
-        this.handleSendMessageDoc()
-      } else {
-        this.handleSendMessage()
-      }
-    },
-    handleSendMessage() {
-      if (this.message === '') {
-        this.$toast.error('Input tidak boleh kosong')
-      } else {
-        const dataMessage = {
-          idUser: this.getDetailUser._id,
-          message: this.message,
-          whatFile: 'message'
-        }
-        this.isLoadingLocal = true
-        this.saveMessageToDB({
-          id: this.getPrivateMessage._id,
-          message: dataMessage
-        })
-          .then((response) => {
-            this.isLoadingLocal = false
-            this.socket.emit('sendMessage', {
-              sendWhat: 1,
-              room: this.getPrivateMessage._id,
-              type: this.getPrivateMessage.type,
-              roomName: this.getPrivateMessage.roomName,
-              name: this.getDetailUser.name,
-              email: this.getDetailUser.email,
-              senderId: this.getDetailUser._id,
-              message: this.message
-            })
-            this.message = ''
-            this.showEmoji = false
-            this.socket.emit('typing', {
-              sendWhat: 1,
-              room: this.getPrivateMessage._id,
-              type: this.getPrivateMessage.type,
-              roomName: this.getPrivateMessage.roomName,
-              name: this.getDetailUser.name,
-              email: this.getDetailUser.email,
-              senderId: this.getDetailUser._id,
-              message: ''
-            })
-          })
-          .catch((err) => {
-            this.isLoadingLocal = false
-            this.message = ''
-            this.showEmoji = false
-            this.socket.emit('typing', {
-              sendWhat: 1,
-              room: this.getPrivateMessage._id,
-              type: this.getPrivateMessage.type,
-              roomName: this.getPrivateMessage.roomName,
-              name: this.getDetailUser.name,
-              email: this.getDetailUser.email,
-              senderId: this.getDetailUser._id,
-              message: ''
-            })
-            console.log(err)
-          })
-      }
-    },
-    handleSendMessageImg() {
-      const formData = new FormData()
-      if (this.fileImage) {
-        if (this.fileImage.size > 2097152) {
-          return this.$toast.error('Max file size 2MB')
-        }
-      }
-      formData.append('image', this.fileImage)
-      formData.append('idUser', this.getDetailUser._id)
-      formData.append('message', this.message)
-      formData.append('whatFile', 'image')
-      this.isLoadingLocal = true
-      this.saveMessageToDB({
-        id: this.getPrivateMessage._id,
-        message: formData
-      })
-        .then((response) => {
-          this.socket.emit('sendMessage', {
-            sendWhat: 3,
-            room: this.getPrivateMessage._id,
-            type: this.getPrivateMessage.type,
-            roomName: this.getPrivateMessage.roomName,
-            name: this.getDetailUser.name,
-            email: this.getDetailUser.email,
-            senderId: this.getDetailUser._id,
-            message: this.message ? this.message : 'Send image'
-          })
-          this.message = ''
-          this.fileImage = null
-          this.showEmoji = false
-          this.isLoadingLocal = false
-        })
-        .catch((err) => {
-          this.message = ''
-          this.fileImage = null
-          this.showEmoji = false
-          this.isLoadingLocal = false
-          console.log(err)
-        })
-      this.socket.emit('typing', {
-        sendWhat: 1,
-        room: this.getPrivateMessage._id,
-        type: this.getPrivateMessage.type,
-        roomName: this.getPrivateMessage.roomName,
-        name: this.getDetailUser.name,
-        email: this.getDetailUser.email,
-        senderId: this.getDetailUser._id,
-        message: ''
-      })
-    },
-    handleSendMessageDoc() {
-      const formData = new FormData()
-      if (this.fileDoc) {
-        if (this.fileDoc.size > 2097152) {
-          return this.$toast.error('Max file size 2MB')
-        }
-      }
-      formData.append('image', this.fileDoc)
-      formData.append('idUser', this.getDetailUser._id)
-      formData.append('message', this.message)
-      formData.append('whatFile', 'doc')
-      this.isLoadingLocal = true
-      this.saveMessageToDB({
-        id: this.getPrivateMessage._id,
-        message: formData
-      })
-        .then((response) => {
-          this.socket.emit('sendMessage', {
-            sendWhat: 4,
-            room: this.getPrivateMessage._id,
-            type: this.getPrivateMessage.type,
-            roomName: this.getPrivateMessage.roomName,
-            name: this.getDetailUser.name,
-            email: this.getDetailUser.email,
-            senderId: this.getDetailUser._id,
-            message: this.message ? this.message : 'Send Doc'
-          })
-          this.message = ''
-          this.fileDoc = null
-          this.showEmoji = false
-          this.isLoadingLocal = false
-        })
-        .catch((err) => {
-          this.message = ''
-          this.fileDoc = null
-          this.showEmoji = false
-          this.isLoadingLocal = false
-          console.log(err)
-        })
-      this.socket.emit('typing', {
-        sendWhat: 1,
-        room: this.getPrivateMessage._id,
-        type: this.getPrivateMessage.type,
-        roomName: this.getPrivateMessage.roomName,
-        name: this.getDetailUser.name,
-        email: this.getDetailUser.email,
-        senderId: this.getDetailUser._id,
-        message: ''
-      })
-    },
-    handleShareLoc() {
-      this.confirmSwal(
-        'Location',
-        'Share current location ?',
-        'question',
-        () => {
-          const dataMessage = {
-            idUser: this.getDetailUser._id,
-            message: 'Share Location',
-            location: this.getDetailUser.location,
-            whatFile: 'location'
-          }
-          this.isLoadingLocal = true
-          this.saveMessageToDB({
-            id: this.getPrivateMessage._id,
-            message: dataMessage
-          })
-            .then((response) => {
-              this.isLoadingLocal = false
-              this.socket.emit('sendMessage', {
-                sendWhat: 2,
-                room: this.getPrivateMessage._id,
-                type: this.getPrivateMessage.type,
-                roomName: this.getPrivateMessage.roomName,
-                name: this.getDetailUser.name,
-                email: this.getDetailUser.email,
-                senderId: this.getDetailUser._id,
-                message: 'Share location',
-                location: this.getDetailUser.location
-              })
-              this.message = ''
-              this.showEmoji = false
-              this.socket.emit('typing', {
-                sendWhat: 2,
-                room: this.getPrivateMessage._id,
-                type: this.getPrivateMessage.type,
-                roomName: this.getPrivateMessage.roomName,
-                name: this.getDetailUser.name,
-                email: this.getDetailUser.email,
-                senderId: this.getDetailUser._id,
-                message: ''
-              })
-            })
-            .catch((err) => {
-              this.isLoadingLocal = false
-              this.message = ''
-              this.showEmoji = false
-              this.socket.emit('typing', {
-                sendWhat: 2,
-                room: this.getPrivateMessage._id,
-                type: this.getPrivateMessage.type,
-                roomName: this.getPrivateMessage.roomName,
-                name: this.getDetailUser.name,
-                email: this.getDetailUser.email,
-                senderId: this.getDetailUser._id,
-                message: ''
-              })
-              console.log(err)
-            })
-        }
-      )
-    },
-    typing() {
-      this.socket.emit('typing', {
-        sendWhat: 1,
-        room: this.getPrivateMessage._id,
-        type: this.getPrivateMessage.type,
-        roomName: this.getPrivateMessage.roomName,
-        name: this.getDetailUser.name,
-        email: this.getDetailUser.email,
-        senderId: this.getDetailUser._id,
-        message: this.message
-      })
-    }
-  },
-  computed: {
-    ...mapState(['socket']),
-    ...mapGetters('user', ['getPrivateMessage', 'getDetailUser']),
-    checkDisabled() {
-      return !!this.fileImage
     }
   }
 }

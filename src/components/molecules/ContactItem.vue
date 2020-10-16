@@ -2,64 +2,28 @@
   <div>
     <div class="contact-item">
       <div class="contact-image">
-        <!-- <g-image v-if="user.image" url="contact/me.jpg" class="img-fluid" /> -->
         <b-avatar
-          v-if="room.type === 1"
-          badge
-          :badge-variant="getPrivateStatus"
-          badge-offset="2px"
-          :src="getPrivateImage"
-          class="no-image"
-        ></b-avatar>
-        <b-avatar
-          variant="info"
           v-if="room.type === 2"
-          :text="getPrivateImage"
+          :text="`${room.name[0]}${room.name[room.name.length - 1]}`"
           class="no-image"
         ></b-avatar>
       </div>
       <div
+        @click="$emit('detail-message', room.idRoom)"
         class="name-description cursor-pointer"
-        @click="$emit('select-room', room)"
       >
-        <h5 class="mb-0 font-17">
-          {{ getPrivateName }}
-        </h5>
-        <p v-if="room.messages.length > 0" class="mb-0 font-13 color-lb">
-          {{
-            room.messages[room.messages.length - 1].idUser.name
-              ? room.messages[room.messages.length - 1].idUser._id ===
-                getDetailUser._id
-                ? 'Me'
-                : room.messages[room.messages.length - 1].idUser.name
-              : 'Unknow'
-          }}:
-          {{
-            room.messages[room.messages.length - 1].message.length > 30
-              ? room.messages[room.messages.length - 1].message.substr(0, 30) +
-                '...'
-              : room.messages[room.messages.length - 1].message
-          }}
+        <h5 class="mb-0 font-17">{{ room.name }}</h5>
+        <p class="mb-0 font-13 text-muted">
+          {{ room.idUser === getDetailUser.id ? 'Me' : room.userName }}:
+          {{ room.message }}
         </p>
-        <p v-else class="mb-0 font-13 color-lb">Click to send message</p>
       </div>
       <div class="clock-check text-right ml-auto">
-        <p v-if="room.messages.length > 0" class="mb-0 font-14 clock">
-          {{ filterTime(room.messages[room.messages.length - 1].time) }}
+        <p class="mb-0 font-14 clock">
+          {{ filterTime(room.createdAt) }}
         </p>
-        <!-- <div>
-        <p
-          class="badge mb-0 btn-lb rounded-circle"
-          v-if="room.messages.length > 0"
-        >
-          {{ room.messages.length }}
-        </p>
-      </div> -->
-        <span
-          v-if="currentRoute === 'Dashboard'"
-          class="cursor-pointer"
-          @click="$emit('change-notif', room._id)"
-          ><b-icon :icon="notif.status ? 'volume-mute' : 'volume-up'"
+        <span v-if="getCurrentRoute === 'Dashboard'" class="cursor-pointer"
+          ><b-icon :icon="status ? 'volume-mute' : 'volume-up'"
         /></span>
       </div>
     </div>
@@ -70,9 +34,12 @@
 import { mapGetters } from 'vuex'
 export default {
   props: {
-    room: Object,
-    notif: Object,
-    currentRoute: String
+    room: Object
+  },
+  data() {
+    return {
+      status: true
+    }
   },
   methods: {
     filterTime(val) {
@@ -87,42 +54,8 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['getDetailUser']),
-    checkNotifAvailable() {
-      return !!localStorage.getItem('notif')
-    },
-    getPrivateName() {
-      if (this.room.type === 1) {
-        const getName = this.room.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        return getName[0].name
-      } else {
-        return this.room.roomName
-      }
-    },
-    getPrivateStatus() {
-      if (this.room.type === 1) {
-        const getName = this.room.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        const status = getName[0].statusOnline
-        return status ? 'warning' : 'danger'
-      } else {
-        return this.room.roomName
-      }
-    },
-    getPrivateImage() {
-      if (this.room.type === 1) {
-        const getImage = this.room.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        return getImage[0].image
-      } else {
-        const name = this.room.roomName.split('')
-        const first = name[0].toUpperCase()
-        const last = name[name.length - 1].toUpperCase()
-        return `${first}${last}`
-      }
+    getCurrentRoute() {
+      return this.$route.name
     }
   }
 }

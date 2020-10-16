@@ -116,6 +116,14 @@ a {
   outline: none;
   box-shadow: none;
 }
+.form-group-auth input.is-valid:focus {
+  outline: none;
+  box-shadow: none;
+}
+.form-group-auth input.is-invalid:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 .max-vh-100 {
   max-height: 100vh !important;
@@ -131,4 +139,30 @@ a {
 
 .color-23 {
   color: #232323 !important;
+}
+
+::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #7e98df;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #7e98df;
+}
+
+@media screen and (max-width: 766px) {
+  .mobile {
+    display: none;
+  }
 }

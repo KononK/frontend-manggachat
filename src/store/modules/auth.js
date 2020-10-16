@@ -80,7 +80,6 @@ const actions = {
           resolve(response.data)
         })
         .catch(err => {
-          console.log(err.response)
           dispatch('changeIsLoading', false, {
             root: true
           })
@@ -205,9 +204,6 @@ const actions = {
     dispatch
   }) {
     commit('LOGOUT_USER')
-    dispatch('user/clearPrivateMessage', null, {
-      root: true
-    })
     dispatch('changeIsLoading', false, {
       root: true
     })
@@ -218,7 +214,7 @@ const actions = {
 const mutations = {
 
   LOGIN_USER: (state, data) => {
-    const token = data.results.token
+    const token = data.data.token
     localStorage.setItem('token', token)
     state.token = token
   },

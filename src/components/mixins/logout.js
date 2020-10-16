@@ -8,8 +8,8 @@ export default {
     logoutMixin(idUser) {
       this.confirmSwal('Logout', 'Are you sure you want to log out ?', 'warning', () => {
         this.updateStatusOnline({
-          idUser: idUser,
-          status: false
+          id: idUser,
+          status: 0
         })
         this.logoutUser()
         this.$router.push({

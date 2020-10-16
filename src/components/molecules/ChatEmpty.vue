@@ -1,7 +1,9 @@
 <template>
-  <div class="col-lg-8 col-md-7 bg-light no-message content-message max-vh-100 min-vh-100">
+  <div
+    class="col-lg-8 col-md-7 bg-light no-message content-message max-vh-100 min-vh-100"
+  >
     <div class="text-center">
-      <p class="mb-1 font-weight-bold">Hallo {{getDetailUser.name}}</p>
+      <p class="mb-1 font-weight-bold">Hallo {{ getDetailUser.name }}</p>
       <p>Please select a chat to start messaging</p>
     </div>
   </div>
@@ -10,7 +12,9 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  computed: mapGetters('user', ['getDetailUser'])
+  computed: {
+    ...mapGetters('user', ['getDetailUser'])
+  }
 }
 </script>
 

@@ -1,123 +1,183 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-4 col-md-5 bg-white px-4 max-vh-100 overflow-auto">
-        <LeftProfile />
-      </div>
-      <!-- Class when chat empty -->
-      <ChatEmpty />
+  <div>
+    <div class="mt-4 mb-5 position-relative">
+      <span @click="$router.push({ name: 'Dashboard' })" class="cursor-pointer">
+        <g-image class="back-icon" url="icon/back.svg" />
+      </span>
+      <h5 class="mb-0 color-lb font-18 text-center">
+        {{
+          getDetailUser.username
+            ? `@${getDetailUser.username}`
+            : 'No username yet'
+        }}
+      </h5>
     </div>
+    <div class="mt-4 mb-5 text-center">
+      <div class="contact-image">
+        <b-avatar
+          v-if="!getDetailUser.image"
+          variant="info"
+          class="no-image-avatar"
+        ></b-avatar>
+        <b-avatar
+          v-if="getDetailUser.image"
+          :src="getDetailUser.image"
+          class="no-image-avatar"
+        ></b-avatar>
+      </div>
+      <g-button
+        v-b-modal.modal-profile
+        class="btn btn-lb px-4 rounded shadow-sm font-12 btn-update-profile"
+        >Update</g-button
+      >
+      <h5 class="mb-0 font-19 mt-1 color-23">{{ getDetailUser.name }}</h5>
+      <small class="text-muted">{{
+        getDetailUser.username
+          ? `@${getDetailUser.username}`
+          : 'No username yet'
+      }}</small>
+    </div>
+    <div class="border-bottom">
+      <p class="font-18 weight-500 mb-2">Account</p>
+      <p class="phone-number weight-400 mb-1 font-15">
+        {{
+          getDetailUser.phoneNumber
+            ? getDetailUser.phoneNumber
+            : 'No phone number yet'
+        }}
+      </p>
+      <p
+        class="font-15 color-lb cursor-pointer mb-0 pb-3"
+        v-b-modal.modal-profile
+      >
+        Tap to change phone number
+      </p>
+    </div>
+    <div class="border-bottom pt-3">
+      <p class="font-15 weight-500 mb-1">
+        {{
+          getDetailUser.username
+            ? `@${getDetailUser.username}`
+            : 'No username yet'
+        }}
+      </p>
+      <p class="font-14 text-muted mb-0 pb-3">Username</p>
+    </div>
+    <div class="pt-3 border-bottom">
+      <p class="font-15 weight-500 mb-1">
+        {{ getDetailUser.bio ? getDetailUser.bio : 'The bio is not set yet' }}
+      </p>
+      <p class="font-14 text-muted mb-0 pb-3">Bio</p>
+    </div>
+    <div class="mt-3 border-bottom pb-4 mb-4">
+      <p class="font-17 weight-500 mb-3">Location</p>
+      <div v-if="!getFirstLoading">
+        <GmapMap
+          :center="{
+            lat: getDetailUser.location
+              ? JSON.parse(getDetailUser.location).lat
+              : location.lat,
+            lng: getDetailUser.location
+              ? JSON.parse(getDetailUser.location).lng
+              : location.lng
+          }"
+          :zoom="18"
+          map-type-id="terrain"
+          style="width: 100%; height: 300px"
+        ></GmapMap>
+      </div>
+    </div>
+    <div class="mb-5 mt-3">
+      <p class="font-18 weight-500 mb-3">Settings</p>
+      <router-link
+        to
+        class="color-23 d-block mb-4 font-15 align-items-center d-flex"
+      >
+        <g-image url="icon/union.svg" class="img-fluid mr-4" />
+        <span>Notification and Sounds</span>
+      </router-link>
+      <router-link
+        to
+        class="color-23 d-block mb-4 font-15 align-items-center d-flex"
+      >
+        <g-image url="icon/lock_2.svg" class="img-fluid mr-4" />
+        <span>Privaty and Security</span>
+      </router-link>
+      <router-link
+        to
+        class="color-23 d-block mb-4 font-15 align-items-center d-flex"
+      >
+        <g-image url="icon/usage.svg" class="img-fluid mr-4" />
+        <span>Data and Stronge</span>
+      </router-link>
+      <router-link
+        to
+        class="color-23 d-block mb-4 font-15 align-items-center d-flex"
+      >
+        <g-image url="icon/chat.svg" class="img-fluid mr-4" />
+        <span>Chat Settings</span>
+      </router-link>
+      <router-link
+        to
+        class="color-23 d-block mb-4 font-15 align-items-center d-flex"
+      >
+        <g-image url="icon/device.svg" class="img-fluid mr-4" />
+        <span>Devices</span>
+      </router-link>
+    </div>
+    <ModalProfile />
   </div>
 </template>
 
 <script>
-import LeftProfile from '@/components/organisms/LeftProfile'
-import ChatEmpty from '@/components/molecules/ChatEmpty'
+import { mapGetters } from 'vuex'
+import ModalProfile from '@/components/molecules/ModalProfile'
 export default {
-  components: {
-    LeftProfile,
-    ChatEmpty
-  },
+  components: { ModalProfile },
   data() {
     return {
-      empty: true
+      newTab: false,
+      location: {
+        lat: 1,
+        lng: 1
+      }
     }
+  },
+  methods: {
+    showNewTab() {
+      this.newTab = !this.newTab
+    }
+  },
+  computed: {
+    ...mapGetters('user', ['getDetailUser']),
+    ...mapGetters(['getFirstLoading'])
   }
 }
 </script>
 
 <style scoped>
-.receiver {
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 15px;
-}
-.sender {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-  align-items: flex-end;
-}
-.sender .message-text {
-  border-radius: 35px 35px 10px 35px;
-  background-color: #fff;
+p {
   color: #232323;
 }
-.receiver .message-text {
-  border-radius: 35px 35px 35px 10px;
-  background-color: #7e98df;
-  color: white;
-}
-.message-text {
-  max-width: 250px;
-  padding: 20px;
-  font-size: 14px;
-}
-.chat-input-card {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-}
 .contact-image img {
-  width: 50px;
-  height: 50px;
+  width: 72px;
+  height: 72px;
   object-fit: cover;
   object-position: center;
   border-radius: 20px;
-  margin-right: 10px;
 }
-.no-message {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.btn-update-profile {
+  position: relative;
+  bottom: 15px;
 }
-
-.no-message p {
-  color: #848484;
-  font-size: 20px;
+.back-icon {
+  position: absolute;
+  top: 4px;
+  left: 10px;
 }
-
-@media screen and (max-width: 767px) {
-  .content-message {
-    display: none;
-  }
-}
-
-.dropdown-menu.show {
-  z-index: 2000;
-}
-
-.dropdown-menu {
-  background: #7e98df !important;
-  border-radius: 35px 10px 35px 35px !important;
-}
-
-.dropdown-item {
-  color: white !important;
-  margin-bottom: 10px;
-}
-.dropdown-item:hover {
-  background: none;
-  color: #fafafa !important;
-}
-
-/* width */
-::-webkit-scrollbar {
-  width: 1px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #7e98df;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #7e98df;
+.no-image-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px !important;
 }
 </style>

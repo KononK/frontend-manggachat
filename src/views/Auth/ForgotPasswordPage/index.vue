@@ -48,7 +48,6 @@ export default {
           this.$router.push({ name: 'Login' })
         })
         .catch((err) => {
-          console.log(err)
           this.$toast.error(err.data.message)
           this.email = ''
         })

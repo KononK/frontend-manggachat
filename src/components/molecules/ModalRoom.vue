@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -38,27 +38,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('room', ['createPublicRoom', 'allMyRoom']),
     handleCreate() {
-      this.createPublicRoom(this.name)
-        .then((response) => {
-          this.$toast.success('Room berhasil di buat')
-          this.$bvModal.hide('modal-room')
-          this.allMyRoom().then((response) => {
-            const onlyIdRoom = response.results.map((room) => room._id)
-            const notifSetting = response.results.map((room) => {
-              return {
-                id: room._id,
-                status: false
-              }
-            })
-            localStorage.setItem('notif', JSON.stringify(notifSetting))
-            this.socket.emit('tesjoin', onlyIdRoom)
-          })
-        })
-        .catch((err) => {
-          this.$toast.error(err.data.message)
-        })
+      console.log('ok')
     }
   },
   computed: {

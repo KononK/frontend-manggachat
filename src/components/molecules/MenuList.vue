@@ -1,5 +1,5 @@
 <template>
-  <div class="message-by mb-4 d-flex overflow-auto py-2 align-items-center">
+  <div class="message-by d-flex overflow-auto py-2 align-items-center">
     <div v-for="(menu, i) in menus" :key="i">
       <router-link
         :to="{ name: menu.name }"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -42,34 +42,32 @@ export default {
     }
   },
   methods: {
-    ...mapActions('user', ['selectPrivateMessage']),
-    ...mapActions('room', [
-      'myPrivateRoom',
-      'myGroupRoom',
-      'allMyRoom',
-      'findRoom',
-      'createPrivateRoom'
-    ]),
-    ...mapActions('friend', [
-      'listFriend',
-      'listUserNotFriend',
-      'listPendingFriend',
-      'listRequestFriend',
-      'listRefuseFriend'
-    ]),
+    // ...mapActions('user', ['selectPrivateMessage']),
+    // ...mapActions('room', [
+    //   'myPrivateRoom',
+    //   'myGroupRoom',
+    //   'allMyRoom',
+    //   'findRoom',
+    //   'createPrivateRoom'
+    // ]),
+    // ...mapActions('friend', [
+    //   'listFriend',
+    //   'listUserNotFriend',
+    //   'listPendingFriend',
+    //   'listRequestFriend',
+    //   'listRefuseFriend'
+    // ]),
     handleNavigate(val) {
       if (val.name === 'Dashboard') {
-        this.allMyRoom()
+        console.log('Dashboard')
       } else if (val.name === 'Private') {
-        this.myPrivateRoom()
+        console.log('Private')
       } else if (val.name === 'Group') {
-        this.myGroupRoom()
+        console.log('Group')
       } else if (val.name === 'Friends') {
-        this.listPendingFriend()
-        this.listRequestFriend()
-        this.listRefuseFriend()
+        console.log('Friends')
       } else if (val.name === 'Users') {
-        this.listUserNotFriend()
+        console.log('Users')
       }
     }
   },
@@ -82,24 +80,4 @@ export default {
 </script>
 
 <style scoped>
-/* width */
-::-webkit-scrollbar {
-  width: 1px;
-  height: 1px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #7e98df;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #7e98df;
-}
 </style>

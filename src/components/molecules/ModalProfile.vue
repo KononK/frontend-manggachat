@@ -93,7 +93,7 @@ export default {
       formData.append('username', this.username)
       formData.append('phoneNumber', this.phoneNumber)
       formData.append('bio', this.bio)
-      this.updateUser({ id: this.getDetailUser._id, data: formData })
+      this.updateUser({ id: this.getDetailUser.id, data: formData })
         .then((response) => {
           this.$toast.success(response.message)
           this.$bvModal.hide('modal-profile')

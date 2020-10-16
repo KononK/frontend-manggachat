@@ -1,25 +1,37 @@
 <template>
   <CardAuth title="Login" description="Hi, Welcome back!">
     <template #body>
-      <!-- <img src="../../../assets/images/logo.svg" width="50" /> -->
       <form @submit.prevent="loginAction">
         <div class="form-group-auth">
-          <label>Email</label>
-          <input
-            type="text"
-            v-model="email"
-            name="email"
-            class="form-control"
-          />
+          <ValidationProvider name="email" rules="required|email">
+            <div slot-scope="{ errors, classes }">
+              <label>Email</label>
+              <small class="d-block text-danger">{{ errors[0] }}</small>
+              <input
+                type="text"
+                v-model="email"
+                name="email"
+                class="form-control"
+                :class="classes"
+              />
+            </div>
+          </ValidationProvider>
         </div>
         <div class="form-group-auth">
-          <label>Password</label>
-          <input
-            type="password"
-            v-model="password"
-            name="password"
-            class="form-control"
-          />
+          <ValidationProvider name="email" rules="required">
+            <div slot-scope="{ errors, classes }">
+              <label>Password</label>
+              <small class="d-block text-danger">{{ errors[0] }}</small>
+
+              <input
+                type="password"
+                v-model="password"
+                name="password"
+                class="form-control"
+                :class="classes"
+              />
+            </div>
+          </ValidationProvider>
         </div>
         <router-link
           :to="{ name: 'ForgotPassword' }"
@@ -66,7 +78,7 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['login']),
-    ...mapActions('user', ['updateLocation', 'updateStatusOnline']),
+    ...mapActions('user', ['updateLocation']),
     loginAction() {
       const dataUser = {
         email: this.email,
@@ -74,10 +86,6 @@ export default {
       }
       this.login(dataUser)
         .then((response) => {
-          this.updateStatusOnline({
-            idUser: response.results.idUser,
-            status: true
-          })
           this.$toast.success('Login success')
           const r = Math.random().toString(36).substring(7)
           this.$router.push({
@@ -88,6 +96,7 @@ export default {
           this.password = ''
         })
         .catch((err) => {
+          console.log(err)
           this.$toast.error(err.data.message)
           this.password = ''
         })

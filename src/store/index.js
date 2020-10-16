@@ -6,6 +6,7 @@ import auth from './modules/auth'
 import user from './modules/user'
 import room from './modules/room'
 import friend from './modules/friend'
+import message from './modules/message'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
     auth,
     user,
     room,
-    friend
+    friend,
+    message
   }
 })

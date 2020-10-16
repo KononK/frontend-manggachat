@@ -1,52 +1,41 @@
 <template>
   <b-sidebar id="sidebar-right" right shadow>
     <h5 class="mb-0 color-lb font-18 text-center mb-3">
-      {{ getPrivateUsername }}
+      {{ getDetailRoom.name }}
     </h5>
     <div class="px-3 py-2">
       <div class="contact-image text-center">
         <b-avatar
-          variant="info"
-          v-if="getPrivateMessage.type === 2"
-          :text="getPrivateImage"
-          class="no-image-avatar"
-        ></b-avatar>
-        <b-avatar
-          v-if="getPrivateMessage.type === 1 && !getPrivateImage"
-          variant="info"
-          class="no-image-avatar"
-        ></b-avatar>
-        <b-avatar
-          v-if="getPrivateMessage.type === 1 && getPrivateImage"
-          :src="getPrivateImage"
+          v-if="getDetailRoom.type === 2"
+          :text="`${getDetailRoom.name[0]}${
+            getDetailRoom.name[getDetailRoom.name.length - 1]
+          }`"
           class="no-image-avatar"
         ></b-avatar>
       </div>
       <div class="border-bottom pb-3 mt-4">
         <div>
-          <p class="font-17 weight-500 mb-1">{{ getPrivateName }}</p>
+          <p class="font-17 weight-500 mb-1">{{ getDetailRoom.name }}</p>
           <p class="phone-number weight-400 mb-1 font-14">
-            <span v-if="getPrivateMessage.type === 1">Online</span>
-            <span v-if="getPrivateMessage.type === 2">Group</span>
+            <span v-if="getDetailRoom.type === 2">Group</span>
+            <span v-if="getDetailRoom.type === 1">Online</span>
           </p>
         </div>
-        <div class="mt-4" v-if="getPrivateMessage.type === 1">
+        <div class="mt-4" v-if="getDetailRoom.type === 1">
           <p class="font-17 weight-500 mb-1">Phone Number</p>
-          <p class="phone-number weight-400 mb-1 font-14">
-            {{ getPrivatePhone }}
-          </p>
+          <p class="phone-number weight-400 mb-1 font-14">Phone</p>
         </div>
       </div>
-      <TabSidebarRight @detail-imaged="handleImaged" />
+      <TabSidebarRight />
     </div>
-    <ModalInvite />
+    <!-- <ModalInvite /> -->
   </b-sidebar>
 </template>
 
 <script>
-import TabSidebarRight from '@/components/molecules/TabSidebarRight'
-import ModalInvite from '@/components/molecules/ModalInvite'
 import { mapGetters } from 'vuex'
+import TabSidebarRight from '@/components/molecules/TabSidebarRight'
+// import ModalInvite from '@/components/molecules/ModalInvite'
 export default {
   data() {
     return {
@@ -58,83 +47,11 @@ export default {
     }
   },
   components: {
-    ModalInvite,
+    // ModalInvite,
     TabSidebarRight
   },
-  methods: {
-    handleImaged(val) {
-      this.$emit('detail-image', val)
-    }
-  },
-  mounted() {
-    this.$watchLocation({ enableHighAccuracy: true }).then((coordinates) => {
-      this.location.lat = coordinates.lat
-      this.location.lng = coordinates.lng
-    })
-  },
   computed: {
-    ...mapGetters('user', ['getPrivateMessage', 'getDetailUser']),
-    getPrivateUsername() {
-      if (this.getPrivateMessage.type === 1) {
-        const getName = this.getPrivateMessage.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        if (getName[0].username) {
-          return '@' + getName[0].username
-        } else {
-          return 'No username yet'
-        }
-      } else {
-        return this.getPrivateMessage.roomName
-      }
-    },
-    getPrivatePhone() {
-      if (this.getPrivateMessage.type === 1) {
-        const getName = this.getPrivateMessage.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        if (getName[0].username) {
-          return getName[0].phoneNumber
-        } else {
-          return 'No phone number yet'
-        }
-      } else {
-        return this.getPrivateMessage.roomName
-      }
-    },
-    getPrivateName() {
-      if (this.getPrivateMessage.type === 1) {
-        const getName = this.getPrivateMessage.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        return getName[0].name
-      } else {
-        return this.getPrivateMessage.roomName
-      }
-    },
-    getPrivateLocation() {
-      if (this.getPrivateMessage.type === 1) {
-        const getLocation = this.getPrivateMessage.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        return getLocation[0].location
-      } else {
-        return true
-      }
-    },
-    getPrivateImage() {
-      if (this.getPrivateMessage.type === 1) {
-        const getImage = this.getPrivateMessage.members.filter(
-          (item) => item._id !== this.getDetailUser._id
-        )
-        return getImage[0].image
-      } else {
-        const name = this.getPrivateMessage.roomName.split('')
-        const first = name[0].toUpperCase()
-        const last = name[name.length - 1].toUpperCase()
-        return `${first}${last}`
-      }
-    }
+    ...mapGetters('room', ['getDetailRoom'])
   }
 }
 </script>

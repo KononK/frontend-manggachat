@@ -53,7 +53,11 @@ export default {
         )
       } else {
         const token = this.$route.query.token
-        this.resetPassword({ token, password: this.newPassword })
+        this.resetPassword({
+          token,
+          password: this.newPassword,
+          confirmPassword: this.confirmPassword
+        })
           .then((response) => {
             this.$toast.success(response.message)
             this.$router.push({ name: 'Login' })

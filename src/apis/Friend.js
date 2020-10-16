@@ -1,26 +1,22 @@
-import Api from './Api'
-const END_POINT = 'friends'
+import Api from '../apis/Api'
+const ENDPOINT = 'friends'
 
 export default {
-  get: (status) => {
-    return Api.get(`${END_POINT}/my-friend?status=${status}`)
+
+  getMyFriend: () => {
+    return Api.get(`${ENDPOINT}/my-friend`)
   },
-  post: (data) => {
-    return Api.post(`${END_POINT}`, {
-      idFriend: data
-    })
+  addFriend: (id) => {
+    return Api.post(`${ENDPOINT}/req-friend`, { idUser: id })
   },
-  acc: (data) => {
-    return Api.patch(`${END_POINT}/acc-friend`, {
-      idFriend: data
-    })
+  accFriend: (id) => {
+    return Api.patch(`${ENDPOINT}/acc-friend`, { idUser: id })
   },
-  deleteFriend: (data) => {
-    return Api.delete(`${END_POINT}/${data}`)
+  refuseFriend: (id) => {
+    return Api.patch(`${ENDPOINT}/refuse-friend`, { idUser: id })
   },
-  refuse: (data) => {
-    return Api.patch(`${END_POINT}/refuse-friend`, {
-      idFriend: data
-    })
+  deleteFriendRequest: (id) => {
+    return Api.delete(`${ENDPOINT}/${id}`)
   }
+
 }

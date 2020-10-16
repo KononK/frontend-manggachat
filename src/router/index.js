@@ -6,9 +6,12 @@ import ForgotPassword from '../views/Auth/ForgotPasswordPage'
 import VerifyAccount from '../views/Auth/VerifyAccount.vue'
 import ResetPassword from '../views/Auth/ResetPasswordPage'
 import Home from '../views/Home'
-import Dashboard from '../views/Home/HomePage'
 import Setting from '../views/Home/SettingPage'
-import Masuk from '../views/Masuk.vue'
+import Dashboard from '../views/Home/HomePage'
+import Private from '../views/Home/PrivatePage'
+import Group from '../views/Home/GroupPage'
+import Friends from '../views/Home/FriendPage'
+import Users from '../views/Home/UserPage'
 
 import store from '../store'
 
@@ -18,7 +21,9 @@ const routes = [ //
   {
     path: '/',
     name: 'Root',
-    component: Login
+    redirect: {
+      name: 'Login'
+    }
   },
   {
     path: '/home',
@@ -39,22 +44,22 @@ const routes = [ //
       {
         path: 'private',
         name: 'Private',
-        component: Dashboard
+        component: Private
       },
       {
         path: 'group',
         name: 'Group',
-        component: Dashboard
+        component: Group
       },
       {
         path: 'friends',
         name: 'Friends',
-        component: Dashboard
+        component: Friends
       },
       {
         path: 'users',
         name: 'Users',
-        component: Dashboard
+        component: Users
       },
       {
         path: 'setting',
@@ -70,11 +75,6 @@ const routes = [ //
     meta: {
       requiresVisit: true
     }
-  },
-  {
-    path: '/masuk',
-    name: 'Masuk',
-    component: Masuk
   },
   {
     path: '/register',

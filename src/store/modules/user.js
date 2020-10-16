@@ -3,17 +3,13 @@ import User from '@/apis/User'
 // state
 const state = {
   user: {},
-  privateMessage: {},
-  userList: [],
-  listFriend: []
+  users: []
 }
 
 // getters
 const getters = {
-  getDetailUser: (state) => state.user,
-  getListUser: (state) => state.userList,
-  getPrivateMessage: (state) => state.privateMessage,
-  getListFriend: (state) => state.listFriend
+  getAllUser: (state) => state.users,
+  getDetailUser: (state) => state.user
 }
 
 // actions
@@ -36,6 +32,29 @@ const actions = {
         })
         dispatch('detailUser')
       }).catch(err => {
+        console.log(err)
+        dispatch('changeIsLoading', false, {
+          root: true
+        })
+        reject(err.response)
+      })
+    })
+  },
+  allUser({
+    dispatch,
+    commit
+  }) {
+    dispatch('changeIsLoading', true, {
+      root: true
+    })
+    return new Promise((resolve, reject) => {
+      User.getAll().then(response => {
+        resolve(response.data)
+        dispatch('changeIsLoading', false, {
+          root: true
+        })
+        commit('ALL_USER', response.data.data)
+      }).catch(err => {
         dispatch('changeIsLoading', false, {
           root: true
         })
@@ -45,9 +64,9 @@ const actions = {
   },
   updateLocation({
     dispatch
-  }, data) {
+  }, { id, location }) {
     return new Promise((resolve, reject) => {
-      User.updateLocation(data).then(response => {
+      User.updateLocation(id, location).then(response => {
         resolve(response.data)
         dispatch('detailUser')
       }).catch(err => {
@@ -57,16 +76,15 @@ const actions = {
   },
   updateStatusOnline({
     dispatch
-  }, data) {
+  }, { id, status }) {
     return new Promise((resolve, reject) => {
-      User.updateStatusOnline(data).then(response => {
+      User.updateStatusOnline(id, status).then(response => {
         resolve(response.data)
       }).catch(err => {
         reject(err.response)
       })
     })
   },
-
   detailUser({
     commit
   }) {
@@ -78,41 +96,6 @@ const actions = {
         reject(err.response)
       })
     })
-  },
-  listUser({
-    commit
-  }) {
-    return new Promise((resolve, reject) => {
-      User.userList().then(response => {
-        resolve(response.data)
-        commit('GET_LIST_USER', response.data)
-      }).catch(err => {
-        reject(err.response)
-      })
-    })
-  },
-  listFriend({
-    commit
-  }) {
-    return new Promise((resolve, reject) => {
-      User.listFriend('acc').then(response => {
-        resolve(response.data)
-        commit('GET_LIST_FRIEND', response.data)
-      }).catch(err => {
-        reject(err.response)
-      })
-    })
-  },
-  selectPrivateMessage({
-    commit
-  }, data) {
-    console.log(data)
-    commit('SELECT_PRIVATE_MESSAGE', data)
-  },
-  clearPrivateMessage({
-    commit
-  }) {
-    commit('CLEAR_PRIVATE_MESSAGE')
   }
 
 }
@@ -121,19 +104,12 @@ const actions = {
 const mutations = {
 
   GET_DETAIL_USER: (state, data) => {
-    state.user = data.results
+    state.user = data.data
   },
-  GET_LIST_USER: (state, data) => {
-    state.userList = data.results
-  },
-  GET_LIST_FRIEND: (state, data) => {
-    state.listFriend = data.results
-  },
-  SELECT_PRIVATE_MESSAGE: (state, data) => {
-    state.privateMessage = data
-  },
-  CLEAR_PRIVATE_MESSAGE: (state) => {
-    state.privateMessage = {}
+  ALL_USER: (state, payload) => {
+    state.users = payload.map(item => {
+      return { ...item, isLoading: false }
+    })
   }
 
 }
