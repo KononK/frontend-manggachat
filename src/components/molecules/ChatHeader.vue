@@ -25,7 +25,7 @@
             {{ getPrivate.friendName }}
           </p>
           <!-- <p class="mb-0 font-11 text-muted" v-if="getPrivateMessage.type === 2">Guna, Ridwan, Angga, Ica,....</p> -->
-          <p class="mb-0 font-12" v-if="message">Sedang Mengetik...</p>
+          <p class="mb-0 font-12" v-if="message">{{ typingMessage }}...</p>
           <span class="color-lb font-12" v-if="!message">
             {{
               getDetailRoom.type === 2
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -53,7 +53,17 @@ export default {
       message: ''
     }
   },
+  mounted() {
+    this.socket.on('typingNotif', (data) => {
+      console.log(data)
+      if (data.room === this.getDetailRoom.idRoom) {
+        this.typingMessage = data.notif
+        this.message = data.message
+      }
+    })
+  },
   computed: {
+    ...mapState(['socket']),
     ...mapGetters('room', ['getDetailRoom']),
     ...mapGetters('user', ['getDetailUser']),
     ...mapGetters('friend', ['getMyFriend']),

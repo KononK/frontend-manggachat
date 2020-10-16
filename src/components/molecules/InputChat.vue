@@ -15,6 +15,7 @@
         </div>
         <input
           @keyup.enter="send"
+          @keyup="typing"
           v-model="message"
           type="text"
           placeholder="Type your message..."
@@ -157,9 +158,11 @@ export default {
           .then((response) => {
             this.socketForMessage(1)
             this.clearState()
+            this.clearTyping()
           })
           .catch((err) => {
             this.clearState()
+            this.clearTyping()
             console.log(err)
           })
       }
@@ -181,10 +184,12 @@ export default {
         .then((response) => {
           this.socketForMessage(3)
           this.clearState()
+          this.clearTyping()
         })
         .catch((err) => {
           this.clearState()
           console.log(err)
+          this.clearTyping()
         })
     },
     handleSendMessageDoc() {
@@ -204,10 +209,12 @@ export default {
         .then((response) => {
           this.socketForMessage(4)
           this.clearState()
+          this.clearTyping()
         })
         .catch((err) => {
           this.clearState()
           console.log(err)
+          this.clearTyping()
         })
     },
     handleShareLoc() {
@@ -227,10 +234,12 @@ export default {
           this.sendMessage(dataMessage)
             .then((response) => {
               this.socketForMessage(2)
+              this.clearTyping(2)
               this.clearState()
             })
             .catch((err) => {
               this.clearState()
+              this.clearTyping(2)
               console.log(err)
             })
         }
@@ -263,8 +272,33 @@ export default {
       this.fileImage = null
       this.fileDoc = null
       this.isLoadingLocal = false
+    },
+    typing() {
+      this.socket.emit('typing', {
+        sendWhat: 1,
+        room: this.getDetailRoom.idRoom,
+        type: this.getDetailRoom.type,
+        roomName: this.getDetailRoom.roomName,
+        name: this.getDetailUser.name,
+        email: this.getDetailUser.email,
+        senderId: this.getDetailUser.id,
+        message: this.message
+      })
+    },
+    clearTyping(type) {
+      this.socket.emit('typing', {
+        sendWhat: type || 1,
+        room: this.getDetailRoom.idRoom,
+        type: this.getDetailRoom.type,
+        roomName: this.getDetailRoom.roomName,
+        name: this.getDetailUser.name,
+        email: this.getDetailUser.email,
+        senderId: this.getDetailUser.id,
+        message: ''
+      })
     }
   },
+
   computed: {
     ...mapState(['socket']),
     ...mapGetters('user', ['getDetailUser']),
