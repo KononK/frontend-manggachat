@@ -43,7 +43,9 @@ export default {
     forgotPasswordActions() {
       this.forgotPassword({ email: this.email })
         .then((response) => {
-          this.$toast.success(response.message)
+          this.$toast.success(
+            'A link to change the password has been sent to your email'
+          )
           this.email = ''
           this.$router.push({ name: 'Login' })
         })

@@ -23,7 +23,11 @@
         </h5>
         <p class="mb-0 font-13 text-muted">
           {{
-            room.sender === getDetailUser.id && room.type === 2 ? 'Me: ' : ''
+            room.type === 2
+              ? room.sender === getDetailUser.id
+                ? 'Me: '
+                : `${room.userName}: `
+              : ''
           }}
           {{ filterMessage }}
         </p>
