@@ -1,15 +1,19 @@
 <template>
   <div id="auth">
     <div class="container">
+      <div class="alert alert-primary" role="alert">
+        Masih dalam tahap pengembangan tanggal rilis v1
+        <strong>Senin 19 Oktober 2020</strong>
+      </div>
       <div class="row">
         <div class="col-lg-5 col-md-8 col-sm-12 mx-auto">
           <div class="card border-0">
             <div class="card-body px-5 py-4">
-              <router-link v-if="needBack" :to="{name: 'Login'}">
+              <router-link v-if="needBack" :to="{ name: 'Login' }">
                 <g-image class="back-icon" url="icon/back.svg" />
               </router-link>
-              <div class="card-title">{{title}}</div>
-              <p class="card-description mb-4">{{description}}</p>
+              <div class="card-title">{{ title }}</div>
+              <p class="card-description mb-4">{{ description }}</p>
               <slot name="body"></slot>
             </div>
           </div>
