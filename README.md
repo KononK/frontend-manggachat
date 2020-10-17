@@ -83,11 +83,11 @@ npm run serve
  </p>
  
 ## Related Project
-* [`Backend-mangga-chat`](https://github.com/joonacode/Backend-mangga-chat)
+* [`Backend-manggachat`](https://github.com/joonacode/backend-manggachat)
 
 <!-- CONTACT -->
 ## Contact
 
 My Email : joonacode@gmail.com
 
-Project Link: [https://github.com/joonacode/Frontend-mangga-chat](https://github.com/joonacode/Frontend-mangga-chat)
+Project Link: [https://github.com/joonacode/frontend-manggachat](https://github.com/joonacode/frontend-manggachat)
