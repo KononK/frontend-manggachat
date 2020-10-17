@@ -158,12 +158,12 @@ export default {
   align-items: flex-end;
 }
 .sender .message-text {
-  border-radius: 25px 25px 10px 25px;
+  border-radius: 25px 25px 0 25px;
   background-color: #eef;
   color: #444;
 }
 .receiver .message-text {
-  border-radius: 25px 25px 25px 10px;
+  border-radius: 25px 25px 25px 0;
   background-color: #7e98df;
   color: white;
 }
@@ -179,5 +179,10 @@ export default {
   object-fit: cover;
   object-position: center;
   border-radius: 20px;
+}
+@media screen and (max-width: 550px) {
+  .contact-image {
+    display: none !important;
+  }
 }
 </style>

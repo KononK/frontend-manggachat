@@ -130,6 +130,12 @@ const mutations = {
     state.friendRequestRejected = payload.data.filter(item => {
       return item.status === 2 && item.idUser === payload.id && item.idSender === payload.id
     })
+  },
+  CLEAR_FRIEND: (state) => {
+    state.myFriend = []
+    state.friendRequest = []
+    state.friendRequestPending = []
+    state.friendRequestRejected = []
   }
 
 }

@@ -110,6 +110,10 @@ const mutations = {
     state.users = payload.map(item => {
       return { ...item, isLoading: false }
     })
+  },
+  CLEAR_USER: (state) => {
+    state.user = {}
+    state.users = []
   }
 
 }

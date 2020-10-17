@@ -8,22 +8,27 @@
       </div>
       <div v-else>
         <h5 class="text-dark mb-5 text-center">There are no more users</h5>
-        <g-image
+        <!-- <g-image
           url="illustration/nofriends.svg"
           class="img-fluid px-1"
           alt="private"
-        />
+        /> -->
+        <div class="image-fluid">
+          <ImageNoUser />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import ImageNoUser from '@/components/atoms/ImageNoUser'
 import UserItem from '@/components/molecules/UserItem'
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   components: {
-    UserItem
+    UserItem,
+    ImageNoUser
   },
   methods: {
     ...mapActions('friend', ['addFriend']),

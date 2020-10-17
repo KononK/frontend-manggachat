@@ -61,13 +61,6 @@
               <g-image class="ml-5" url="icon/documents.png" width="18" />
             </button>
             <button
-              class="dropdown-item mb-2 d-flex justify-content-between"
-              type="button"
-            >
-              <span>Contacts</span>
-              <g-image class="ml-5" url="icon/contacts.png" width="18" />
-            </button>
-            <button
               @click="handleShareLoc"
               class="dropdown-item mb-2 d-flex justify-content-between"
               type="button"

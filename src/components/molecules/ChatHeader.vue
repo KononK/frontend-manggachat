@@ -87,15 +87,6 @@ export default {
 </script>
 
 <style scoped>
-.back-icon {
-  display: none;
-}
-@media screen and (max-width: 766px) {
-  .back-icon {
-    display: block;
-  }
-}
-
 .no-image {
   width: 50px;
   height: 50px;

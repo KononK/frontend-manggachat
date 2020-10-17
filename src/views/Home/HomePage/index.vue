@@ -27,9 +27,10 @@ export default {
   },
   methods: {
     ...mapActions('message', ['detailMessage']),
-    ...mapActions('room', ['changeNotif']),
+    ...mapActions('room', ['changeNotif', 'memberRoom']),
     handleDetailMessage(id) {
       this.detailMessage({ id, page: 1 })
+      this.memberRoom(id)
       this.$emit('change-type')
     },
     handleToggleNotif(id) {

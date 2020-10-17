@@ -201,9 +201,22 @@ const actions = {
   },
   logoutUser({
     commit,
-    dispatch
+    dispatch,
+    rootState
   }) {
     commit('LOGOUT_USER')
+    commit('message/CLEAR_DETAIL_MESSAGE', null, {
+      root: true
+    })
+    commit('room/CLEAR_ROOM', null, {
+      root: true
+    })
+    commit('friend/CLEAR_FRIEND', null, {
+      root: true
+    })
+    commit('user/CLEAR_USER', null, {
+      root: true
+    })
     dispatch('changeIsLoading', false, {
       root: true
     })

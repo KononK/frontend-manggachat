@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 // import { mapActions } from 'vuex'
 export default {
   data() {
@@ -42,32 +43,20 @@ export default {
     }
   },
   methods: {
-    // ...mapActions('user', ['selectPrivateMessage']),
-    // ...mapActions('room', [
-    //   'myPrivateRoom',
-    //   'myGroupRoom',
-    //   'allMyRoom',
-    //   'findRoom',
-    //   'createPrivateRoom'
-    // ]),
-    // ...mapActions('friend', [
-    //   'listFriend',
-    //   'listUserNotFriend',
-    //   'listPendingFriend',
-    //   'listRequestFriend',
-    //   'listRefuseFriend'
-    // ]),
+    ...mapActions('room', ['myRoom']),
+    ...mapActions('friend', ['myFriend']),
+    ...mapActions('user', ['allUser']),
     handleNavigate(val) {
       if (val.name === 'Dashboard') {
-        console.log('Dashboard')
+        this.myRoom()
       } else if (val.name === 'Private') {
-        console.log('Private')
+        this.myRoom()
       } else if (val.name === 'Group') {
-        console.log('Group')
+        this.myRoom()
       } else if (val.name === 'Friends') {
-        console.log('Friends')
+        this.myFriend()
       } else if (val.name === 'Users') {
-        console.log('Users')
+        this.allUser()
       }
     }
   },
