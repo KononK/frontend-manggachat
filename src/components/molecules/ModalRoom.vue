@@ -51,6 +51,8 @@ export default {
             this.$bvModal.hide('modal-room')
           })
           .catch((err) => {
+            this.name = ''
+
             this.$toast.error(err.data.message)
           })
       }

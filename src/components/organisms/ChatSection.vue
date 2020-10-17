@@ -41,6 +41,21 @@
                 ></timeago>
               </p>
             </div>
+            <div
+              v-if="item.type === 7"
+              class="d-flex justify-content-center mb-2"
+            >
+              <p
+                class="text-center text-white px-3 py-2 rounded bg-secondary font-12 mb-0 d-inline-block"
+              >
+                {{ item.name }} Join group-
+                <timeago
+                  :datetime="item.createdAt"
+                  class="font-12"
+                  :auto-update="60"
+                ></timeago>
+              </p>
+            </div>
           </div>
         </template>
         <template v-slot:right="{ item }">

@@ -2,6 +2,9 @@
   <div class="mt-4 overflow-auto">
     <b-tabs pills content-class="mt-3">
       <b-tab v-if="getDetailRoom.type === 1" title="Location" active>
+        <template v-slot:title>
+          <b-icon icon="geo-alt-fill" />
+        </template>
         <GmapMap
           :center="JSON.parse(getPrivate.location)"
           :zoom="18"

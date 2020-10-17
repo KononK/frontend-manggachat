@@ -22,7 +22,9 @@
           {{ getPrivate.friendName }}
         </h5>
         <p class="mb-0 font-13 text-muted">
-          {{ room.sender === getDetailUser.id ? 'Me' : room.userName }}:
+          {{
+            room.sender === getDetailUser.id && room.type === 2 ? 'Me: ' : ''
+          }}
           {{ filterMessage }}
         </p>
       </div>

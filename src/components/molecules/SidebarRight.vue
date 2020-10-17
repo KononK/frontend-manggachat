@@ -14,6 +14,11 @@
           }`"
           class="no-image-avatar"
         ></b-avatar>
+        <b-avatar
+          v-if="getDetailRoom.type === 1"
+          :src="getPrivate.image"
+          class="no-image-avatar"
+        ></b-avatar>
       </div>
       <div class="border-bottom pb-3 mt-4">
         <div>

@@ -2,7 +2,7 @@
   <div
     class="neww"
     :class="[message.idUser === getDetailUser.id ? 'sender' : 'receiver']"
-    v-if="message.type !== 6"
+    v-if="message.type !== 6 && message.type !== 7"
   >
     <div class="set">
       <div class="contact-image">
