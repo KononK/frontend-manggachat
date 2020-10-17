@@ -9,7 +9,7 @@
         <div class="form-group-auth">
           <label>Email</label>
           <input
-            type="text"
+            type="email"
             name="email"
             v-model="email"
             class="form-control"

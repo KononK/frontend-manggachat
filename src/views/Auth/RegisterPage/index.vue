@@ -8,17 +8,28 @@
         </div>
         <div class="form-group-auth">
           <label>Email</label>
-          <input type="text" name="email" v-model="email" class="form-control" />
+          <input
+            type="email"
+            name="email"
+            v-model="email"
+            class="form-control"
+          />
         </div>
         <div class="form-group-auth">
           <label>Password</label>
-          <input type="password" name="password" v-model="password" class="form-control" />
+          <input
+            type="password"
+            name="password"
+            v-model="password"
+            class="form-control"
+          />
         </div>
         <g-button
           type="submit"
           :isLoading="getLoading"
           class="btn-lb btn-block mt-4 p-auth rounded-pill"
-        >Register</g-button>
+          >Register</g-button
+        >
         <div class="log-with my-4 border-bottom text-center position-relative">
           <span class="bg-white p-3 font-13">Register With</span>
         </div>

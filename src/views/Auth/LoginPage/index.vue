@@ -8,7 +8,7 @@
               <label>Email</label>
               <small class="d-block text-danger">{{ errors[0] }}</small>
               <input
-                type="text"
+                type="email"
                 v-model="email"
                 name="email"
                 class="form-control"
